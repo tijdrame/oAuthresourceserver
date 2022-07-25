@@ -1,10 +1,16 @@
 package com.emard.resourceserver.config;
 
+import java.util.Collections;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 
 @Configuration
@@ -24,7 +30,7 @@ public class ProjectSecurityConfig {
 		JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
 		jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(new KeycloakRoleConverter());
 
-		http.cors().disable()/*.configurationSource(new CorsConfigurationSource() {
+		http.cors().configurationSource(new CorsConfigurationSource() {
 					@Override
 					public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
 						CorsConfiguration config = new CorsConfiguration();
@@ -35,7 +41,7 @@ public class ProjectSecurityConfig {
 						config.setMaxAge(3600L);
 						return config;
 					}
-				}).and()*/.authorizeHttpRequests((auth) -> auth
+				}).and().authorizeHttpRequests((auth) -> auth
 						.antMatchers("/myAccount").hasRole("USER")
 						.antMatchers("/myBalance").hasAnyRole("USER","ADMIN")
 						.antMatchers("/myLoans").authenticated()
